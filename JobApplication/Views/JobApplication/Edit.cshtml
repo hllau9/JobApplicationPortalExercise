@@ -1,0 +1,152 @@
+﻿@model JobApplication.Models.JobApplicationFormVM
+
+@{
+    ViewData["Title"] = "Edit Job Application Form";
+}
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Source+Serif+Pro:400,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/multiselect-15/fonts/icomoon/style.css">
+<link rel="stylesheet" href="~/multiselect-15/css/jquery.multiselect.css">
+<link rel="stylesheet" href="~/multiselect-15/css/style.css">
+
+<h1>Job Application Form</h1>
+
+<h4>Please fill out the form with accurate information.</h4>
+<hr />
+<div class="form-container col-md-10">
+    <div class="row">
+        <div class="col-md-10">
+            <form asp-action="Application" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row form-group">
+                    <label asp-for="FirstName" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="FirstName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="LastName" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="LastName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="JobTitle" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="JobTitle" class="form-control" />
+                    </div>
+                    <span asp-validation-for="JobTitle" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="YearsOfExperience" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="YearsOfExperience" class="form-control" />
+                    </div>
+                    <span asp-validation-for="YearsOfExperience" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="PreferredLocation" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="PreferredLocation" class="form-control" />
+                    </div>
+                    <span asp-validation-for="PreferredLocation" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="HeardFromWhere" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <select asp-for="HeardFromWhere" asp-items="Model.HeardFromWhereOptions" class="form-control"></select>
+                    </div>
+                    <span asp-validation-for="HeardFromWhere" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="NoticePeriod" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="NoticePeriod" class="form-control" />
+                    </div>
+                    <span asp-validation-for="NoticePeriod" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="Skills" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <select asp-for="Skills" asp-items="Model.SkillOptions" class="3col active form-control" multiple style="border: solid red 1px;"></select>
+                    </div>
+                    <span asp-validation-for="Skills" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="Phone" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="Phone" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="Email" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="Email" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="Address" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="Address" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Address" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="row form-group">
+                    <label asp-for="ResumeFile" class="control-label col-md-5"></label>
+                    <div class="col-md-7">
+                        <input asp-for="ResumeFile" type="file" class="form-control-file" />
+                    </div>
+                    <span asp-validation-for="ResumeFile" class="text-danger col-md-6 offset-5"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Submit" class="btn btn-primary float-right" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/multiselect-15/js/popper.min.js"></script>
+<script src="~/multiselect-15/js/jquery.multiselect.js"></script>
+<script src="~/multiselect-15/js/main.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.ms-options input:checkbox').change(function () {
+            console.log('checkbox');
+            if ($('.ms-options input[type="checkbox"]:checked').length > 0) {
+                $('span[data-valmsg-for="Skills"]').text('');
+            } else {
+                $('span[data-valmsg-for="Skills"]').text('Please select your skills.');
+            }
+        });
+
+        $('.ms-selectall').click(function () {
+            console.log('selectall', $('.ms-options input[type="checkbox"]:checked').length);
+            if ($('.ms-options input[type="checkbox"]:checked').length > 0) {   // for whatever reason, select all works differently
+                $('span[data-valmsg-for="Skills"]').text('Please select your skills.');
+            } else {
+                $('span[data-valmsg-for="Skills"]').text('');
+            }
+        });
+
+        $("#ApplicationForm").submit(function () {
+            if ($('.ms-options input[type="checkbox"]:checked').length == 0) {
+                $('span[data-valmsg-for="Skills"]').text('Please select your skills.');
+                return false;
+            }
+
+            $('span[data-valmsg-for="Skills"]').text('');
+        });
+    });
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

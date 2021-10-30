@@ -1,0 +1,98 @@
+﻿@model JobApplication.Models.JobApplicationFormVM
+
+@{
+    ViewData["Title"] = "Review";
+}
+
+<h1>Review</h1>
+
+<div>
+    <h4>Please review your input before submission.</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.JobTitle)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.JobTitle)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.YearsOfExperience)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.YearsOfExperience)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.PreferredLocation)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.PreferredLocation)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.HeardFromWhere)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.HeardFromWhere)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NoticePeriod)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.NoticePeriod)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Skills)
+        </dt>
+        <dd class="col-sm-8">
+            <div class="list-inline">
+                @foreach (var skill in Model.SelectedSkills)
+                {
+                    <a class="list-inline-item btn btn-light">@skill.SkillName</a>
+                }
+            </div>
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.ResumeFilePath)
+        </dt>
+        <dd class="col-sm-8">
+            <a href="@Model.ResumeFilePath" target="_blank">View uploaded resume</a>
+        </dd>
+    </dl>
+</div>
+<div class="col-md-8">
+    
+    <form asp-action="Submit">
+        <a asp-action="Edit" class="btn btn-secondary">Edit</a>
+        <input type="submit" value="Submit" class="btn btn-primary float-right" />
+    </form>
+</div>
