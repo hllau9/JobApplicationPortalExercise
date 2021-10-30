@@ -1,4 +1,5 @@
 ﻿using Entities;
+using JobApplication.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace DAL
     public interface IJobApplicationData
     {
         IEnumerable<SkillDTO> GetSkills();
+        bool Add(ApplicantDTO applicationDTO);
     }
 }

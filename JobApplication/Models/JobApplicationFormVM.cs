@@ -31,7 +31,7 @@ namespace JobApplication.Models
         public string HeardFromWhere { get; set; }
         [Required(ErrorMessage = "The Notice Period field is required.")]
         [Display(Name = "Notice Period in Your Current Role")]
-        public int NoticePeriod { get; set; }
+        public string NoticePeriod { get; set; }
         [Required]
         [Display(Name = "Contact No")]
         public string Phone { get; set; }
@@ -43,17 +43,15 @@ namespace JobApplication.Models
         [Required(ErrorMessage = "Please upload your resume.")]
         [Display(Name = "Resume")]
         public IFormFile ResumeFile { get; set; }
-
         [Display(Name = "Resume")]
         public string ResumeFilePath { get; set; }
-
-        public List<SelectListItem> HeardFromWhereOptions { get; set; }
-
         [Required]
         public int[] Skills { get; set; }
-
+        
         public List<SkillDTO> SelectedSkills { get; set; }
+        public List<SelectListItem> HeardFromWhereOptions { get; set; }
         public List<SelectListItem> SkillOptions { get; set; }
+        public List<SelectListItem> NoticePeriodOptions { get; set; }
     }
 
     public class TestVM

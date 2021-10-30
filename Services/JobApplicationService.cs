@@ -1,5 +1,6 @@
 ﻿using DAL;
 using Entities;
+using JobApplication.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,11 @@ namespace Services
         public IEnumerable<SkillDTO> GetSkills()
         {
             return _jobApplicationData.GetSkills();
+        }
+
+        public bool Add(ApplicantDTO applicationDTO)
+        {
+            return _jobApplicationData.Add(applicationDTO);
         }
     }
 }

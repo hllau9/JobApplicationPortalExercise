@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Services;
 using Entities;
+using JobApplication.Entities;
 
 namespace JobApplication.Controllers
 {
@@ -46,6 +47,7 @@ namespace JobApplication.Controllers
         {
             JobApplicationFormVM model = new JobApplicationFormVM();
             model.HeardFromWhereOptions = PopulateHeardFromOptions();
+            model.NoticePeriodOptions = PopulateNoticePeriodOptions();
             model.SkillOptions = PopulateSkillOptions();
 
             return View(model);
@@ -84,7 +86,25 @@ namespace JobApplication.Controllers
         [HttpPost]
         public IActionResult Submit()
         {
-            return Json(editModel);
+            var result = _jobApplicationService.Add(new ApplicantDTO { 
+                                FirstName = editModel.FirstName,
+                                LastName = editModel.LastName,
+                                JobTitle = editModel.JobTitle,
+                                PreferredLocation = editModel.PreferredLocation,
+                                YearsOfExperience = editModel.YearsOfExperience,
+                                HeardFromWhere = editModel.HeardFromWhere,
+                                Email = editModel.Email,
+                                Address = editModel.Address,
+                                Phone = editModel.Phone,
+                                NoticePeriod = editModel.NoticePeriod,
+                                ResumeFilePath = editModel.ResumeFilePath,
+                                Skills = editModel.Skills
+            });
+
+            if (!result)
+                return Content("big deal!");
+
+            return Content("yeay!");
         }
         private string UploadFile(JobApplicationFormVM model)
         {
@@ -93,7 +113,7 @@ namespace JobApplication.Controllers
             if (model.ResumeFile != null)
             {
                 string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "resumes");
-                uniqueFileName = model.Email + "_" + model.ResumeFile.FileName;
+                uniqueFileName = Guid.NewGuid() + "_" + model.ResumeFile.FileName;
                 string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
@@ -106,6 +126,7 @@ namespace JobApplication.Controllers
         public IActionResult Edit()
         {
             editModel.HeardFromWhereOptions = PopulateHeardFromOptions(editModel.HeardFromWhere);
+            editModel.NoticePeriodOptions = PopulateNoticePeriodOptions(editModel.NoticePeriod);
             editModel.SkillOptions = PopulateSkillOptions();
 
             return View(editModel);
@@ -126,6 +147,30 @@ namespace JobApplication.Controllers
             return selectListItems;
         }
 
+        private List<SelectListItem> PopulateNoticePeriodOptions(string selected = "")
+        {
+            List<string> options = new List<string>()
+            {
+                "0 day",
+                "1 day",
+                "2 days",
+                "3 days",
+                "4 days",
+                "5 days",
+                "1 week",
+                "2 weeks",
+                "3 weeks",
+                "4 weeks",
+                "1 month",
+                "2 months",
+                "3 months"
+            };
+
+            List<SelectListItem> selectListItems = options.Select(o => new SelectListItem() { Text = o, Value = o, Selected = o == selected }).ToList();
+
+            return selectListItems;
+        }
+
         private List<SelectListItem> PopulateSkillOptions(int selected = 0)
         {
             IEnumerable<SkillDTO> skillGroups = _jobApplicationService.GetSkills();
@@ -134,20 +179,6 @@ namespace JobApplication.Controllers
             List<SelectListItem> selectListItems = skillGroups.Select(o => new SelectListItem() { Text = o.SkillName, Value = o.SkillId.ToString(), Selected = o.SkillId == selected, Group = selectListGroups.Where(slg => slg.Name == o.SkillGroupName).First() }).ToList();
 
             return selectListItems;
-        }
-
-        [HttpPost]
-        public IActionResult Test(TestVM model)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var skill in model.Skills)
-            {
-                sb.Append(skill);
-                sb.Append("<br />");
-            }
-
-            return Content(sb.ToString());
         }
     }
 }

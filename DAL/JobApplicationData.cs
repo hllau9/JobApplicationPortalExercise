@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using Entities;
+using JobApplication.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -23,17 +25,45 @@ namespace DAL
                 skills = conn.Query<SkillDTO>(sql);
             }
             return skills;
-            
+        }
 
-            //List<SkillDTO> skills = new List<SkillDTO>();
-            //skills.Add(new SkillDTO { SkillGroupId = 1, SkillGroupName = "Group One", SkillId = 1, SkillName = "Skill One" });
-            //skills.Add(new SkillDTO { SkillGroupId = 1, SkillGroupName = "Group One", SkillId = 2, SkillName = "Skill Two" });
-            //skills.Add(new SkillDTO { SkillGroupId = 2, SkillGroupName = "Group Two", SkillId = 6, SkillName = "Skill Six" });
-            //skills.Add(new SkillDTO { SkillGroupId = 3, SkillGroupName = "Group Three", SkillId = 5, SkillName = "Skill Five" });
-            //skills.Add(new SkillDTO { SkillGroupId = 4, SkillGroupName = "Group Four", SkillId = 4, SkillName = "Skill Four" });
-            //skills.Add(new SkillDTO { SkillGroupId = 4, SkillGroupName = "Group Four", SkillId = 3, SkillName = "Skill Three" });
+        public bool Add(ApplicantDTO applicantDTO)
+        {
+            string sqlApplicant = @"insert into Applicants (firstname, lastname, jobtitle, preferredlocation, yearsofexperience, heardfromwhere, noticeperiod, phone, email, address, resumefilepath)
+                                    values (@firstname, @lastname, @jobtitle, @preferredlocation, @yearsofexperience, @heardfromwhere, @noticeperiod, @phone, @email, @address, @resumefilepath);
+                                    select scope_identity();
+                            ";
 
-            //return skills;
+            string sqlSkillMap = @"insert into SkillMap (ApplicantId, SkillId)
+                                        values (@ApplicantId, @SkillId);
+                            ";
+
+            using (SqlConnection conn = new SqlConnection(_connString))
+            {
+                conn.Open();
+                SqlTransaction transaction = conn.BeginTransaction();
+                try
+                {
+                    var insertedRowId = conn.ExecuteScalar<int>(sqlApplicant, applicantDTO, transaction);
+
+                    foreach (var skillId in applicantDTO.Skills)
+                    {
+                        conn.Execute(sqlSkillMap, new { ApplicantId = insertedRowId, SkillId = skillId }, transaction);
+                    }
+                    transaction.Commit();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
         }
     }
 }
