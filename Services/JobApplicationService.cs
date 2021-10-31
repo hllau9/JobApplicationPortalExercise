@@ -28,5 +28,12 @@ namespace Services
         {
             return _jobApplicationData.GetApplicantByEmail(email);
         }
+
+        public IEnumerable<ApplicantSKillDTO> GetApplicantsAndSKills()
+        {
+            var applicants = _jobApplicationData.GetApplicantsAndSkills();
+
+            return applicants;
+        }
     }
 }

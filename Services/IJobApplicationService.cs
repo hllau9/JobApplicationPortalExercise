@@ -14,5 +14,7 @@ namespace Services
         bool Add(ApplicantDTO applicationDTO);
 
         ApplicantDTO GetApplicantByEmail(string email);
+
+        IEnumerable<ApplicantSKillDTO> GetApplicantsAndSKills();
     }
 }

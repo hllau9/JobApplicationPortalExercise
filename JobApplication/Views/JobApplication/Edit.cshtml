@@ -18,7 +18,7 @@
 <div class="form-container col-md-10">
     <div class="row">
         <div class="col-md-10">
-            <form asp-action="Application" enctype="multipart/form-data">
+            <form asp-action="ApplicantRegistration" enctype="multipart/form-data">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row form-group">
                     <label asp-for="FirstName" class="control-label col-md-5"></label>
@@ -119,7 +119,6 @@
 <script>
     $(document).ready(function () {
         $('.ms-options input:checkbox').change(function () {
-            console.log('checkbox');
             if ($('.ms-options input[type="checkbox"]:checked').length > 0) {
                 $('span[data-valmsg-for="Skills"]').text('');
             } else {
@@ -128,7 +127,6 @@
         });
 
         $('.ms-selectall').click(function () {
-            console.log('selectall', $('.ms-options input[type="checkbox"]:checked').length);
             if ($('.ms-options input[type="checkbox"]:checked').length > 0) {   // for whatever reason, select all works differently
                 $('span[data-valmsg-for="Skills"]').text('Please select your skills.');
             } else {

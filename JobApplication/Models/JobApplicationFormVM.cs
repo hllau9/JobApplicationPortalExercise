@@ -11,6 +11,7 @@ namespace JobApplication.Models
 {
     public class JobApplicationFormVM
     {
+        public int Id { get; set; }
         [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
@@ -47,16 +48,11 @@ namespace JobApplication.Models
         public string ResumeFilePath { get; set; }
         [Required]
         public int[] Skills { get; set; }
-        
+
+        public List<string> SkillList { get; set; }
         public List<SkillDTO> SelectedSkills { get; set; }
         public List<SelectListItem> HeardFromWhereOptions { get; set; }
         public List<SelectListItem> SkillOptions { get; set; }
         public List<SelectListItem> NoticePeriodOptions { get; set; }
-    }
-
-    public class TestVM
-    {
-        public List<string> Skills { get; set; }
-        public List<SelectListItem> SkillOptions { get; set; }
     }
 }

@@ -79,5 +79,19 @@ namespace DAL
             }
             return applicantDTO;
         }
+
+        public IEnumerable<ApplicantSKillDTO> GetApplicantsAndSkills()
+        {
+            string sql = @"select a.*, c.Id SkillId, c.SkillName from applicants a
+                            join SkillMap b on b.ApplicantId = a.Id
+                            join Skills c on c.Id = b.SkillId";
+
+            IEnumerable<ApplicantSKillDTO> applicants = new List<ApplicantSKillDTO>();
+            using (SqlConnection conn = new SqlConnection(_connString))
+            {
+                applicants = conn.Query<ApplicantSKillDTO>(sql);
+            }
+            return applicants;
+        }
     }
 }

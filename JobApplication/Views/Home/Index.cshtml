@@ -3,6 +3,23 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (TempData["SubmissionSuccessful"] != null)
+    {
+        <h1 id="SuccessMessage" class="display-4" style="margin-top: 2em;">Congrats! Your registration was successful.</h1>
+    }
+
+
+    <h1 id="RegistrationLink" class="display-3" style="margin-top: 2.5em;"><a asp-controller="JobApplication" asp-action="Index">Register now for your dream job.</a></h1>
+
+
+
 </div>
+
+
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('#SuccessMessage').hide(2000);
+        }, 3000);
+    });
+</script>
