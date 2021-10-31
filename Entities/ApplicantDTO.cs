@@ -11,7 +11,7 @@ namespace JobApplication.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string JobTitle { get; set; }
-        public int YearsOfExperience { get; set; }
+        public int? YearsOfExperience { get; set; }
         public string PreferredLocation { get; set; }
         public string HeardFromWhere { get; set; }
         public string NoticePeriod { get; set; }

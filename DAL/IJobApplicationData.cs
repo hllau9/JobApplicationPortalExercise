@@ -12,5 +12,7 @@ namespace DAL
     {
         IEnumerable<SkillDTO> GetSkills();
         bool Add(ApplicantDTO applicationDTO);
+
+        ApplicantDTO GetApplicantByEmail(string email);
     }
 }

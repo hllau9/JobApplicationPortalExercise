@@ -23,5 +23,10 @@ namespace Services
         {
             return _jobApplicationData.Add(applicationDTO);
         }
+
+        public ApplicantDTO GetApplicantByEmail(string email)
+        {
+            return _jobApplicationData.GetApplicantByEmail(email);
+        }
     }
 }

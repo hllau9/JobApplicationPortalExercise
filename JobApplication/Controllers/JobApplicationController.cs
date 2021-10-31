@@ -59,6 +59,16 @@ namespace JobApplication.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            if (_jobApplicationService.GetApplicantByEmail(model.Email) != null)
+            {
+                ModelState.AddModelError("", "Email already exists.");
+
+                model.HeardFromWhereOptions = PopulateHeardFromOptions(model.HeardFromWhere);
+                model.NoticePeriodOptions = PopulateNoticePeriodOptions(model.NoticePeriod);
+                model.SkillOptions = PopulateSkillOptions();
+                return View(model);
+            }
+
             model.ResumeFilePath = "/resumes/" + UploadFile(model);
 
             return RedirectToAction("Review", model);

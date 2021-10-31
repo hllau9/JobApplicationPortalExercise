@@ -2,6 +2,7 @@
 using Entities;
 using JobApplication.Entities;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -64,6 +65,19 @@ namespace DAL
                     conn.Close();
                 }
             }
+        }
+
+        public ApplicantDTO GetApplicantByEmail(string email)
+        {
+            string sql = @"select Email from Applicants where Email = @email";
+
+            ApplicantDTO applicantDTO = new ApplicantDTO();
+
+            using (SqlConnection conn = new SqlConnection(_connString))
+            {
+                applicantDTO = conn.Query<ApplicantDTO>(sql, new { email = email }).FirstOrDefault();
+            }
+            return applicantDTO;
         }
     }
 }

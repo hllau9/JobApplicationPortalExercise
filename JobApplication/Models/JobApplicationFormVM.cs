@@ -22,7 +22,7 @@ namespace JobApplication.Models
         public string JobTitle { get; set; }
         [Required(ErrorMessage = "Please enter the number of years of experience.")]
         [Display(Name = "Number of Years of Experience")]
-        public int YearsOfExperience { get; set; }
+        public int? YearsOfExperience { get; set; }
         [Required]
         [Display(Name = "Preferred Location")]
         public string PreferredLocation { get; set; }
