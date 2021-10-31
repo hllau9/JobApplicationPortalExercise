@@ -41,7 +41,11 @@ namespace JobApplication.Controllers
             JobApplicationFormVM model = new JobApplicationFormVM();
             model.HeardFromWhereOptions = PopulateHeardFromOptions();
             model.NoticePeriodOptions = PopulateNoticePeriodOptions();
-            model.SkillOptions = PopulateSkillOptions();
+
+            var skillOptions = PopulateSkillOptions();
+            if (skillOptions == null)
+                return View("Error");
+            model.SkillOptions = skillOptions;
 
             return View(model);
         }
@@ -49,10 +53,18 @@ namespace JobApplication.Controllers
         [HttpPost]
         public IActionResult ApplicantRegistration(JobApplicationFormVM model)
         {
-            if (_jobApplicationService.GetApplicantByEmail(model.Email) != null)
+            try
             {
-                ModelState.AddModelError("", "Email already exists.");
+                if (_jobApplicationService.GetApplicantByEmail(model.Email) != null)
+                {
+                    ModelState.AddModelError("", "Email already exists.");
+                }
             }
+            catch
+            {
+                return View("Error");
+            }
+            
 
             var supportedTypes = new[] { "txt", "doc", "docx", "pdf" };
             var fileExt = Path.GetExtension(model.ResumeFile.FileName).Substring(1).ToLower();
@@ -65,7 +77,11 @@ namespace JobApplication.Controllers
             {
                 model.HeardFromWhereOptions = PopulateHeardFromOptions(model.HeardFromWhere);
                 model.NoticePeriodOptions = PopulateNoticePeriodOptions(model.NoticePeriod);
-                model.SkillOptions = PopulateSkillOptions();
+                var skillOptions = PopulateSkillOptions();
+                if (skillOptions == null)
+                    return View("Error");
+                model.SkillOptions = skillOptions;
+
                 return View(model);
             }
         
@@ -84,7 +100,15 @@ namespace JobApplication.Controllers
                 return RedirectToAction("ApplicantRegistration");
             }
 
-            var skills = _jobApplicationService.GetSkills();
+            IEnumerable<SkillDTO> skills = null;
+            try 
+            { 
+                skills = _jobApplicationService.GetSkills();
+            }
+            catch
+            {
+                return View("Error");
+            }
 
             model.SelectedSkills = skills.Where(s => model.Skills.Contains(s.SkillId)).ToList();
 
@@ -96,20 +120,30 @@ namespace JobApplication.Controllers
         [HttpPost]
         public IActionResult Submit()
         {
-            var result = _jobApplicationService.Add(new ApplicantDTO { 
-                                FirstName = editModel.FirstName,
-                                LastName = editModel.LastName,
-                                JobTitle = editModel.JobTitle,
-                                PreferredLocation = editModel.PreferredLocation,
-                                YearsOfExperience = editModel.YearsOfExperience,
-                                HeardFromWhere = editModel.HeardFromWhere,
-                                Email = editModel.Email,
-                                Address = editModel.Address,
-                                Phone = editModel.Phone,
-                                NoticePeriod = editModel.NoticePeriod,
-                                ResumeFilePath = editModel.ResumeFilePath,
-                                Skills = editModel.Skills
-            });
+            bool result = false;
+            try
+            {
+                result = _jobApplicationService.Add(new ApplicantDTO
+                {
+                    FirstName = editModel.FirstName,
+                    LastName = editModel.LastName,
+                    JobTitle = editModel.JobTitle,
+                    PreferredLocation = editModel.PreferredLocation,
+                    YearsOfExperience = editModel.YearsOfExperience,
+                    HeardFromWhere = editModel.HeardFromWhere,
+                    Email = editModel.Email,
+                    Address = editModel.Address,
+                    Phone = editModel.Phone,
+                    NoticePeriod = editModel.NoticePeriod,
+                    ResumeFilePath = editModel.ResumeFilePath,
+                    Skills = editModel.Skills
+                });
+            }
+            catch
+            {
+                return View("Error");
+            }
+            
 
             if (!result)
                 return View("Error");
@@ -139,14 +173,28 @@ namespace JobApplication.Controllers
         {
             editModel.HeardFromWhereOptions = PopulateHeardFromOptions(editModel.HeardFromWhere);
             editModel.NoticePeriodOptions = PopulateNoticePeriodOptions(editModel.NoticePeriod);
-            editModel.SkillOptions = PopulateSkillOptions();
+            
+            var skillOptions = PopulateSkillOptions();
+            if (skillOptions == null)
+                return View("Error");
+            editModel.SkillOptions = skillOptions;
 
             return View(editModel);
         }
 
         public IActionResult ViewApplicants()
         {
-            var applicants = _jobApplicationService.GetApplicantsAndSKills();
+            IEnumerable<ApplicantSKillDTO> applicants = null;
+            try
+            {
+                applicants = _jobApplicationService.GetApplicantsAndSKills();
+            }
+            catch
+            {
+                return View("Error");
+            }
+
+            
 
             var results = from a in applicants
                           group a.SkillName by new { a.Id, a.FirstName, a.LastName, a.JobTitle, a.YearsOfExperience, a.PreferredLocation, a.HeardFromWhere, a.NoticePeriod, a.Phone, a.Email, a.Address, a.ResumeFilePath } into g
@@ -212,7 +260,15 @@ namespace JobApplication.Controllers
 
         private List<SelectListItem> PopulateSkillOptions(int selected = 0)
         {
-            IEnumerable<SkillDTO> skillGroups = _jobApplicationService.GetSkills();
+            IEnumerable<SkillDTO> skillGroups = null;
+            try
+            {
+                skillGroups = _jobApplicationService.GetSkills();
+            }
+            catch
+            {
+                return null;
+            }
 
             List<SelectListGroup> selectListGroups = skillGroups.GroupBy(sg => sg.SkillGroupName).Select(s => new SelectListGroup { Name = s.First().SkillGroupName }).ToList();
             List<SelectListItem> selectListItems = skillGroups.Select(o => new SelectListItem() { Text = o.SkillName, Value = o.SkillId.ToString(), Selected = o.SkillId == selected, Group = selectListGroups.Where(slg => slg.Name == o.SkillGroupName).First() }).ToList();
