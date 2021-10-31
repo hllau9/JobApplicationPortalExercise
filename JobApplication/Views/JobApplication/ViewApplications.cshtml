@@ -1,10 +1,11 @@
-﻿@model IEnumerable<JobApplication.Models.JobApplicationFormVM>
+﻿@model IEnumerable<JobApplication.Web.Models.JobApplicationFormVM>
 
 @{
-    ViewData["Title"] = "ViewApplicants";
+    Layout = "_LayoutContainerFluid";
+    ViewData["Title"] = "View Applications";
 }
 
-<h1>View Applicants</h1>
+<h1>View Applications</h1>
 
 <table class="table">
     <thead>
@@ -16,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.JobTitle)
+                @Html.DisplayNameFor(model => model.CurrentJobTitle)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.YearsOfExperience)
@@ -42,11 +43,14 @@
             <th>
                 @Html.DisplayNameFor(model => model.ResumeFilePath)
             </th>
+            <th>
+                Role Applied
+            </th>
             <th>Skills</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.FirstName)
@@ -55,7 +59,7 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.JobTitle)
+                @Html.DisplayFor(modelItem => item.CurrentJobTitle)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.YearsOfExperience)
@@ -82,7 +86,10 @@
                 <a href="@item.ResumeFilePath" target="_blank">View resume</a>
             </td>
             <td>
-                @{ 
+                @Html.DisplayFor(modelItem => item.JobPostingTitle)
+            </td>
+            <td>
+                @{
                     var skills = "";
                     var count = 1;
 
@@ -99,6 +106,6 @@
                 @skills
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

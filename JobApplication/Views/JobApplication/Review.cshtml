@@ -1,4 +1,4 @@
-﻿@model JobApplication.Models.JobApplicationFormVM
+﻿@model JobApplication.Web.Models.JobApplicationFormVM
 
 @{
     ViewData["Title"] = "Review";
@@ -8,6 +8,8 @@
 
 <div>
     <h4>Please review your input before submission.</h4>
+    <p />
+    <h1 class="display-4">Role: @Model.JobPostingTitle</h1>
     <hr />
     <dl class="row">
         <dt class="col-sm-4">
@@ -23,10 +25,10 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class="col-sm-4">
-            @Html.DisplayNameFor(model => model.JobTitle)
+            @Html.DisplayNameFor(model => model.CurrentJobTitle)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.JobTitle)
+            @Html.DisplayFor(model => model.CurrentJobTitle)
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.YearsOfExperience)

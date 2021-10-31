@@ -1,19 +1,14 @@
-﻿using Entities;
-using JobApplication.Entities;
-using System;
+﻿using JobApplication.Entities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DAL
+namespace JobApplication.DAL
 {
     public interface IJobApplicationData
     {
         IEnumerable<SkillDTO> GetSkills();
-        bool Add(ApplicantDTO applicationDTO);
-        ApplicantDTO GetApplicantByEmail(string email);
+        bool Add(ApplicationDTO applicationDTO);
+        IEnumerable<ApplicationDTO> GetApplicationByEmail(string email);
 
-        IEnumerable<ApplicantSKillDTO> GetApplicantsAndSkills();
+        IEnumerable<ApplicationSKillDTO> GetApplicationAndSkills();
     }
 }

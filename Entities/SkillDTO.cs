@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Entities
+﻿namespace JobApplication.Entities
 {
     public class SkillDTO
     {

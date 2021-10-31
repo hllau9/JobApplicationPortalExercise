@@ -1,7 +1,7 @@
-﻿@model JobApplication.Models.JobApplicationFormVM
+﻿@model JobApplication.Web.Models.JobApplicationFormVM
 
 @{
-    ViewData["Title"] = "Edit Applicant Registration Form";
+    ViewData["Title"] = "Edit Application Form";
 }
 
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
@@ -11,14 +11,15 @@
 <link rel="stylesheet" href="~/multiselect-15/css/jquery.multiselect.css">
 <link rel="stylesheet" href="~/multiselect-15/css/style.css">
 
-<h1>Applicant Registration</h1>
+<h1 class="display-3">Role: @Model.JobPostingTitle</h1>
 
-<h4>Please provide accurate information so we can find the best jobs for you.</h4>
+<h4>Please provide accurate information.</h4>
 <hr />
 <div class="form-container col-md-10">
     <div class="row">
         <div class="col-md-10">
-            <form asp-action="ApplicantRegistration" enctype="multipart/form-data">
+            <form asp-action="Application" enctype="multipart/form-data">
+                <input type="hidden" asp-for="JobPostingId" />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="row form-group">
                     <label asp-for="FirstName" class="control-label col-md-5"></label>
@@ -35,11 +36,11 @@
                     <span asp-validation-for="LastName" class="text-danger col-md-6 offset-5"></span>
                 </div>
                 <div class="row form-group">
-                    <label asp-for="JobTitle" class="control-label col-md-5"></label>
+                    <label asp-for="CurrentJobTitle" class="control-label col-md-5"></label>
                     <div class="col-md-7">
-                        <input asp-for="JobTitle" class="form-control" />
+                        <input asp-for="CurrentJobTitle" class="form-control" />
                     </div>
-                    <span asp-validation-for="JobTitle" class="text-danger col-md-6 offset-5"></span>
+                    <span asp-validation-for="CurrentJobTitle" class="text-danger col-md-6 offset-5"></span>
                 </div>
                 <div class="row form-group">
                     <label asp-for="YearsOfExperience" class="control-label col-md-5"></label>

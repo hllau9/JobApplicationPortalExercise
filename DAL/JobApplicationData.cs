@@ -1,12 +1,11 @@
 ﻿using Dapper;
-using Entities;
 using JobApplication.Entities;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-namespace DAL
+namespace JobApplication.DAL
 {
     public class JobApplicationData : IJobApplicationData
     {
@@ -28,15 +27,18 @@ namespace DAL
             return skills;
         }
 
-        public bool Add(ApplicantDTO applicantDTO)
+        public bool Add(ApplicationDTO applicationDTO)
         {
-            string sqlApplicant = @"insert into Applicants (firstname, lastname, jobtitle, preferredlocation, yearsofexperience, heardfromwhere, noticeperiod, phone, email, address, resumefilepath)
-                                    values (@firstname, @lastname, @jobtitle, @preferredlocation, @yearsofexperience, @heardfromwhere, @noticeperiod, @phone, @email, @address, @resumefilepath);
+            if (applicationDTO == null)
+                return false;
+
+            string sqlApplication = @"insert into Applications (firstname, lastname, currentjobtitle, preferredlocation, yearsofexperience, heardfromwhere, noticeperiod, phone, email, address, resumefilepath, jobpostingid)
+                                    values (@firstname, @lastname, @currentjobtitle, @preferredlocation, @yearsofexperience, @heardfromwhere, @noticeperiod, @phone, @email, @address, @resumefilepath, @jobpostingid);
                                     select scope_identity();
                             ";
 
-            string sqlSkillMap = @"insert into SkillMap (ApplicantId, SkillId)
-                                        values (@ApplicantId, @SkillId);
+            string sqlSkillMap = @"insert into SkillMap (ApplicationId, SkillId)
+                                        values (@ApplicationId, @SkillId);
                             ";
 
             using (SqlConnection conn = new SqlConnection(_connString))
@@ -45,11 +47,11 @@ namespace DAL
                 SqlTransaction transaction = conn.BeginTransaction();
                 try
                 {
-                    var insertedRowId = conn.ExecuteScalar<int>(sqlApplicant, applicantDTO, transaction);
+                    var insertedRowId = conn.ExecuteScalar<int>(sqlApplication, applicationDTO, transaction);
 
-                    foreach (var skillId in applicantDTO.Skills)
+                    foreach (var skillId in applicationDTO.Skills)
                     {
-                        conn.Execute(sqlSkillMap, new { ApplicantId = insertedRowId, SkillId = skillId }, transaction);
+                        conn.Execute(sqlSkillMap, new { ApplicationId = insertedRowId, SkillId = skillId }, transaction);
                     }
                     transaction.Commit();
 
@@ -67,31 +69,31 @@ namespace DAL
             }
         }
 
-        public ApplicantDTO GetApplicantByEmail(string email)
+        public IEnumerable<ApplicationDTO> GetApplicationByEmail(string email)
         {
-            string sql = @"select Email from Applicants where Email = @email";
+            string sql = @"select * from Applications where Email = @email";
 
-            ApplicantDTO applicantDTO = new ApplicantDTO();
+            IEnumerable<ApplicationDTO> applications = null;
 
             using (SqlConnection conn = new SqlConnection(_connString))
             {
-                applicantDTO = conn.Query<ApplicantDTO>(sql, new { email = email }).FirstOrDefault();
+                applications = conn.Query<ApplicationDTO>(sql, new { email = email });
             }
-            return applicantDTO;
+            return applications;
         }
 
-        public IEnumerable<ApplicantSKillDTO> GetApplicantsAndSkills()
+        public IEnumerable<ApplicationSKillDTO> GetApplicationAndSkills()
         {
-            string sql = @"select a.*, c.Id SkillId, c.SkillName from applicants a
-                            join SkillMap b on b.ApplicantId = a.Id
+            string sql = @"select a.*, c.Id SkillId, c.SkillName from Applications a
+                            join SkillMap b on b.ApplicationId = a.Id
                             join Skills c on c.Id = b.SkillId";
 
-            IEnumerable<ApplicantSKillDTO> applicants = new List<ApplicantSKillDTO>();
+            IEnumerable<ApplicationSKillDTO> applications = new List<ApplicationSKillDTO>();
             using (SqlConnection conn = new SqlConnection(_connString))
             {
-                applicants = conn.Query<ApplicantSKillDTO>(sql);
+                applications = conn.Query<ApplicationSKillDTO>(sql);
             }
-            return applicants;
+            return applications;
         }
     }
 }

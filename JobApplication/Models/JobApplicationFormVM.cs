@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using JobApplication.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JobApplication.Models
+namespace JobApplication.Web.Models
 {
     public class JobApplicationFormVM
     {
@@ -19,8 +19,8 @@ namespace JobApplication.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
         [Required]
-        [Display(Name = "Job Title")]
-        public string JobTitle { get; set; }
+        [Display(Name = "Current Job Title")]
+        public string CurrentJobTitle { get; set; }
         [Required(ErrorMessage = "Please enter the number of years of experience.")]
         [Display(Name = "Number of Years of Experience")]
         public int? YearsOfExperience { get; set; }
@@ -47,7 +47,12 @@ namespace JobApplication.Models
         [Display(Name = "Resume")]
         public string ResumeFilePath { get; set; }
         [Required]
+        [Display(Name = "Your Skills")]
         public int[] Skills { get; set; }
+
+        public int JobPostingId { get; set; }
+        [Display(Name = "Role")]
+        public string JobPostingTitle { get; set; }
 
         public List<string> SkillList { get; set; }
         public List<SkillDTO> SelectedSkills { get; set; }

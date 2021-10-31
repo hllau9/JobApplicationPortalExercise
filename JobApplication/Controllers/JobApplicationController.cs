@@ -1,19 +1,15 @@
-﻿using JobApplication.Models;
+﻿using JobApplication.Entities;
+using JobApplication.Web.Models;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using JobApplication.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Services;
-using Entities;
-using JobApplication.Entities;
 
 namespace JobApplication.Controllers
 {
@@ -22,22 +18,27 @@ namespace JobApplication.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IConfiguration _configuration;
         private readonly IJobApplicationService _jobApplicationService;
+        private readonly IJobPostingService _jobPostingService;
         private static JobApplicationFormVM editModel { get; set; } = new JobApplicationFormVM();
 
-        public JobApplicationController(IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IJobApplicationService jobApplicationService)
+        public JobApplicationController(IWebHostEnvironment webHostEnvironment, IConfiguration configuration, IJobApplicationService jobApplicationService, IJobPostingService jobPostingService)
         {
             _webHostEnvironment = webHostEnvironment;
             _configuration = configuration;
             _jobApplicationService = jobApplicationService;
+            _jobPostingService = jobPostingService;
         }
 
         public IActionResult Index()
         {
-            return RedirectToAction("ApplicantRegistration");
+            return RedirectToAction("Application");
         }
 
-        public IActionResult ApplicantRegistration()
+        public IActionResult Application(int id = 0)
         {
+            if (id == 0)
+                return RedirectToAction("Index", "JobPosting");
+
             JobApplicationFormVM model = new JobApplicationFormVM();
             model.HeardFromWhereOptions = PopulateHeardFromOptions();
             model.NoticePeriodOptions = PopulateNoticePeriodOptions();
@@ -46,18 +47,33 @@ namespace JobApplication.Controllers
             if (skillOptions == null)
                 return View("Error");
             model.SkillOptions = skillOptions;
+            model.JobPostingId = id;
+
+            try
+            {
+                model.JobPostingTitle = _jobPostingService.GetJobPostingById(id).JobTitle;
+            }
+            catch
+            {
+                return View("Error");
+            }
+            
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult ApplicantRegistration(JobApplicationFormVM model)
+        public IActionResult Application(JobApplicationFormVM model)
         {
             try
             {
-                if (_jobApplicationService.GetApplicantByEmail(model.Email) != null)
+                model.JobPostingTitle = _jobPostingService.GetJobPostingById(model.JobPostingId).JobTitle;
+
+                var applications = _jobApplicationService.GetApplicationByEmail(model.Email);
+                if (applications != null)
                 {
-                    ModelState.AddModelError("", "Email already exists.");
+                    if (applications.Where(a => a.JobPostingId == model.JobPostingId).Count() > 0)
+                        ModelState.AddModelError("", "Somebody with the same email has already applied for this role.");
                 }
             }
             catch
@@ -84,7 +100,7 @@ namespace JobApplication.Controllers
 
                 return View(model);
             }
-        
+
             model.ResumeFilePath = "/resumes/" + UploadFile(model);
 
             return RedirectToAction("Review", model);
@@ -97,13 +113,15 @@ namespace JobApplication.Controllers
             Request.Headers.TryGetValue("Referer", out header);
             if (header.Count == 0)
             {
-                return RedirectToAction("ApplicantRegistration");
+                return RedirectToAction("Application");
             }
 
             IEnumerable<SkillDTO> skills = null;
+            string jobPostingTitle = null;
             try 
             { 
                 skills = _jobApplicationService.GetSkills();
+                jobPostingTitle = _jobPostingService.GetJobPostingById(model.JobPostingId).JobTitle;
             }
             catch
             {
@@ -111,6 +129,7 @@ namespace JobApplication.Controllers
             }
 
             model.SelectedSkills = skills.Where(s => model.Skills.Contains(s.SkillId)).ToList();
+            model.JobPostingTitle = jobPostingTitle;
 
             editModel = model;
 
@@ -123,11 +142,11 @@ namespace JobApplication.Controllers
             bool result = false;
             try
             {
-                result = _jobApplicationService.Add(new ApplicantDTO
+                result = _jobApplicationService.Add(new ApplicationDTO
                 {
                     FirstName = editModel.FirstName,
                     LastName = editModel.LastName,
-                    JobTitle = editModel.JobTitle,
+                    CurrentJobTitle = editModel.CurrentJobTitle,
                     PreferredLocation = editModel.PreferredLocation,
                     YearsOfExperience = editModel.YearsOfExperience,
                     HeardFromWhere = editModel.HeardFromWhere,
@@ -136,14 +155,14 @@ namespace JobApplication.Controllers
                     Phone = editModel.Phone,
                     NoticePeriod = editModel.NoticePeriod,
                     ResumeFilePath = editModel.ResumeFilePath,
-                    Skills = editModel.Skills
+                    Skills = editModel.Skills,
+                    JobPostingId = editModel.JobPostingId
                 });
             }
             catch
             {
                 return View("Error");
             }
-            
 
             if (!result)
                 return View("Error");
@@ -177,44 +196,44 @@ namespace JobApplication.Controllers
             var skillOptions = PopulateSkillOptions();
             if (skillOptions == null)
                 return View("Error");
+
             editModel.SkillOptions = skillOptions;
 
             return View(editModel);
         }
 
-        public IActionResult ViewApplicants()
+        public IActionResult ViewApplications()
         {
-            IEnumerable<ApplicantSKillDTO> applicants = null;
+            IEnumerable<ApplicationSKillDTO> applications = null;
+            IEnumerable<JobApplicationFormVM> model = null;
             try
             {
-                applicants = _jobApplicationService.GetApplicantsAndSKills();
+                applications = _jobApplicationService.GetApplicationAndSKills();
+
+                model = from a in applications
+                        group a.SkillName by new { a.Id, a.FirstName, a.LastName, a.CurrentJobTitle, a.YearsOfExperience, a.PreferredLocation, a.HeardFromWhere, a.NoticePeriod, a.Phone, a.Email, a.Address, a.ResumeFilePath, a.JobPostingId } into g
+                        select new JobApplicationFormVM
+                        {
+                            Id = g.Key.Id,
+                            FirstName = g.Key.FirstName,
+                            LastName = g.Key.LastName,
+                            CurrentJobTitle = g.Key.CurrentJobTitle,
+                            YearsOfExperience = g.Key.YearsOfExperience,
+                            PreferredLocation = g.Key.PreferredLocation,
+                            HeardFromWhere = g.Key.HeardFromWhere,
+                            NoticePeriod = g.Key.NoticePeriod,
+                            Phone = g.Key.Phone,
+                            Email = g.Key.Email,
+                            Address = g.Key.Address,
+                            ResumeFilePath = g.Key.ResumeFilePath,
+                            SkillList = g.ToList(),
+                            JobPostingTitle = _jobPostingService.GetJobPostingById(g.Key.JobPostingId).JobTitle
+                        };
             }
             catch
             {
                 return View("Error");
             }
-
-            
-
-            var results = from a in applicants
-                          group a.SkillName by new { a.Id, a.FirstName, a.LastName, a.JobTitle, a.YearsOfExperience, a.PreferredLocation, a.HeardFromWhere, a.NoticePeriod, a.Phone, a.Email, a.Address, a.ResumeFilePath } into g
-                          select new JobApplicationFormVM { 
-                              Id = g.Key.Id,
-                              FirstName = g.Key.FirstName,
-                              LastName = g.Key.LastName,
-                              JobTitle = g.Key.JobTitle,
-                              YearsOfExperience = g.Key.YearsOfExperience,
-                              PreferredLocation = g.Key.PreferredLocation,
-                              HeardFromWhere = g.Key.HeardFromWhere,
-                              NoticePeriod = g.Key.NoticePeriod,
-                              Phone = g.Key.Phone,
-                              Email = g.Key.Email,
-                              Address = g.Key.Address,
-                              ResumeFilePath = g.Key.ResumeFilePath,
-                              SkillList = g.ToList()
-                          };
-
-            var model = results.ToList();
 
             return View(model);
         }

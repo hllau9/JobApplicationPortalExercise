@@ -1,15 +1,10 @@
-using DAL;
+using JobApplication.DAL;
+using JobApplication.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace JobApplication
 {
@@ -29,6 +24,9 @@ namespace JobApplication
 
             services.AddScoped<IJobApplicationData>(_ => new JobApplicationData(Configuration.GetConnectionString("connString")));
             services.AddScoped<IJobApplicationService, JobApplicationService>();
+
+            services.AddScoped<IJobPostingData>(_ => new JobPostingData(Configuration.GetConnectionString("connString")));
+            services.AddScoped<IJobPostingService, JobPostingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,10 +1,8 @@
-﻿using DAL;
-using Entities;
+﻿using JobApplication.DAL;
 using JobApplication.Entities;
-using System;
 using System.Collections.Generic;
 
-namespace Services
+namespace JobApplication.Services
 {
     public class JobApplicationService : IJobApplicationService
     {
@@ -19,21 +17,21 @@ namespace Services
             return _jobApplicationData.GetSkills();
         }
 
-        public bool Add(ApplicantDTO applicationDTO)
+        public bool Add(ApplicationDTO applicationDTO)
         {
             return _jobApplicationData.Add(applicationDTO);
         }
 
-        public ApplicantDTO GetApplicantByEmail(string email)
+        public IEnumerable<ApplicationDTO> GetApplicationByEmail(string email)
         {
-            return _jobApplicationData.GetApplicantByEmail(email);
+            return _jobApplicationData.GetApplicationByEmail(email);
         }
 
-        public IEnumerable<ApplicantSKillDTO> GetApplicantsAndSKills()
+        public IEnumerable<ApplicationSKillDTO> GetApplicationAndSKills()
         {
-            var applicants = _jobApplicationData.GetApplicantsAndSkills();
+            var applications = _jobApplicationData.GetApplicationAndSkills();
 
-            return applicants;
+            return applications;
         }
     }
 }
