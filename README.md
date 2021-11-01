@@ -1,8 +1,8 @@
 # JobApplicationPortalExercise
 
-1. The website is accessible via https://jobapplicationportal.azurewebsites.net.  
+1. The website is accessible via https://jobapplicationportal.azurewebsites.net .  
 
-2. The source code can be found here https://github.com/hllau9/JobApplicationPortalExercise.
+2. The source code can be found here https://github.com/hllau9/JobApplicationPortalExercise .
 
 3. The application was built with ASP NET Core 5, .Net 5.0, Bootstrap 4, jQuery, MS SQL Server. Dapper ORM was used for data access.
 
