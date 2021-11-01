@@ -8,6 +8,8 @@
 
 4. Db initialization script: https://github.com/hllau9/JobApplicationPortalExercise/blob/master/DatabaseScript.sql.
 
-5. CV files are uploaded to the directory wwwroot/resumes6. Workflow: the user views job listing > fill out the form > review > edit or submit. 
+5. CV files are uploaded to the directory wwwroot/resumes
 
-6. The connection string can be changed here https://github.com/hllau9/JobApplicationPortalExercise/blob/master/JobApplication/appsettings.json .
+6. Workflow: view job listing > fill out the form > review > edit or submit. 
+
+7. The connection string can be changed here https://github.com/hllau9/JobApplicationPortalExercise/blob/master/JobApplication/appsettings.json .
