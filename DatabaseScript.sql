@@ -54,7 +54,10 @@ INSERT INTO JobPostings (JobTitle, JobDescription, Employer) VALUES
 ('Tech Lead', 'superstar tech lead', 'Confidential'),
 ('Java Developer', 'senior java developer', 'Randstad'),
 ('DevOps Specialist', 'aws, google cloud, azure, ci/cd', 'PosMalaysia'),
-('.Net Developer', 'C#, ASP .Net developer', 'Singtel')
+('.Net Developer', 'C#, ASP .Net developer', 'Singtel'),
+('Database Administrator', '5 years+ experience as Oracle database admin. Great remuneration package.', 'Confidential'),
+('Joomla Developer', 'Joomla Developer', 'MNC'),
+('Frontend Web Developer', 'Experience in developing with ReactJS and AngularJS', 'Umbrella')
 
 INSERT INTO SkillGroups (SkillGroupName) VALUES
 ('Web'),
@@ -66,7 +69,8 @@ INSERT INTO SkillGroups (SkillGroupName) VALUES
 ('Network and Information Security'),
 ('Virtualization'),
 ('Big Data'),
-('eCommerce Platforms')
+('eCommerce Platforms'),
+('Databases')
 
 DECLARE @skillGroupId INT
 
@@ -80,6 +84,8 @@ INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('React', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('ASP .NET Webforms', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('ASP .NET MVC', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('ASP .NET Core', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('ReactJS', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('AngularJS', @skillGroupId)
 
 SELECT @skillGroupId = Id FROM SkillGroups WHERE SkillGroupName = 'Programming'
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('C#', @skillGroupId)
@@ -105,7 +111,6 @@ INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('AWS', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Kubernetes', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Docker', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Google Cloud', @skillGroupId)
-
 
 SELECT @skillGroupId = Id FROM SkillGroups WHERE SkillGroupName = 'Machine Learning'
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('TensorFlow', @skillGroupId)
@@ -146,6 +151,14 @@ INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('OpenCart', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('WooCommerce', @skillGroupId)
 INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Shopify', @skillGroupId)
 
+SELECT @skillGroupId = Id FROM SkillGroups WHERE SkillGroupName = 'Databases'
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('MS SQL Server', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Oracle', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Postgres', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('MySQL', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('IBM DB2', @skillGroupId)
+INSERT INTO Skills (SkillName, SkillGroupId) VALUES ('Azure SQL', @skillGroupId)
+
 DECLARE @jobPostingId INT
 DECLARE @skillId INT
 
@@ -178,4 +191,22 @@ SELECT @skillId = Id FROM Skills WHERE SkillName = 'ASP .NET MVC'
 INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
 SELECT @skillId = Id FROM Skills WHERE SkillName = 'ASP .NET Core'
 INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+
+SELECT @jobPostingId = Id FROM JobPostings WHERE JobTitle = 'Database Administrator'
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'Oracle'
+INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'MS SQL Server'
+INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'Database Management'
+INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+
+SELECT @jobPostingId = Id FROM JobPostings WHERE JobTitle = 'Joomla Developer'
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'PHP'
+INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'MySQL'
+
+SELECT @jobPostingId = Id FROM JobPostings WHERE JobTitle = 'Frontend Web Developer'
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'ReactJS'
+INSERT INTO JobPostingSkillMap (JobPostingId, SkillId) VALUES (@jobPostingId, @skillId)
+SELECT @skillId = Id FROM Skills WHERE SkillName = 'AngularJS'
 

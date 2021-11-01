@@ -22,6 +22,7 @@ namespace JobApplication.Web.Models
         [Display(Name = "Current Job Title")]
         public string CurrentJobTitle { get; set; }
         [Required(ErrorMessage = "Please enter the number of years of experience.")]
+        [Range(0, 100, ErrorMessage = "Please enter a value between {1} and {2}")]
         [Display(Name = "Number of Years of Experience")]
         public int? YearsOfExperience { get; set; }
         [Required]
@@ -51,7 +52,7 @@ namespace JobApplication.Web.Models
         public int[] Skills { get; set; }
 
         public int JobPostingId { get; set; }
-        [Display(Name = "Role")]
+        [Display(Name = "Job Title")]
         public string JobPostingTitle { get; set; }
 
         public List<string> SkillList { get; set; }
